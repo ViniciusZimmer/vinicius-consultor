@@ -1,22 +1,20 @@
-import React, { useState, type SyntheticEvent } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
   Paper,
   Button,
-  MenuItem,
-  Tabs,
-  Tab,
   Slider,
+  ToggleButton,
+  ToggleButtonGroup,
   styled,
-  Select,
-  FormControl,
-  InputLabel,
-  type SelectChangeEvent,
-  TextField,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
+import { sendFormToFirebase } from "@/hooks/sendForms";
+import FormSection from "./FormSection";
 import theme from "@/theme";
-import { sendFormToFirebase } from "@/hooks/sendForms"; // Importa a função de envio
 
 // Types
 type ProductType = "imoveis" | "automoveis" | "motos" | "servicos";
@@ -25,138 +23,87 @@ const PRODUCT_OPTIONS: { value: ProductType; label: string }[] = [
   { value: "imoveis", label: "Imóveis" },
   { value: "automoveis", label: "Automóveis" },
   { value: "motos", label: "Motos" },
-  { value: "servicos", label: "Serviços" },
 ];
 
-const TAB_LABELS = ["Parcela", "Crédito"] as const;
-
+// Styled components
 const FormContainer = styled(Paper)(({ theme }) => ({
-  maxWidth: "100%",
+  maxWidth: 600, // Largura fixa
+  width: "100%",
+  height: 600, // Altura fixa
+  minHeight: 600, // Garantir altura mínima
   padding: theme.spacing(4),
-  borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[4],
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[6],
   display: "flex",
   flexDirection: "column",
-  gap: theme.spacing(3),
-}));
-
-const StyledTabs = styled(Tabs)(({ theme }) => ({
-  marginBottom: theme.spacing(2.5),
-  "& .MuiTabs-indicator": {
-    backgroundColor: theme.palette.primary.main,
-    height: "3px",
+  alignItems: "center",
+  gap: theme.spacing(4),
+  backgroundColor: theme.palette.background.paper,
+  [theme.breakpoints.down("sm")]: {
+    maxWidth: "90%",
+    padding: theme.spacing(3),
+    gap: theme.spacing(3),
   },
 }));
 
-const StyledTab = styled(Tab)(({ theme }) => ({
-  fontWeight: 600,
-  fontSize: "0.9rem",
-  color: theme.palette.text.secondary,
-  "&.Mui-selected": {
-    color: theme.palette.primary.main,
-  },
-}));
-
-const StyledSlider = styled(Slider)(({ theme }) => ({
-  color: theme.palette.primary.main,
-  "& .MuiSlider-thumb": {
-    width: 20,
-    height: 20,
-    backgroundColor: theme.palette.common.white,
-    border: `2px solid ${theme.palette.primary.main}`,
-  },
-  "& .MuiSlider-track": {
-    height: 6,
-  },
-  "& .MuiSlider-rail": {
-    height: 6,
-  },
-}));
-
-const SimulateButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.common.white,
-  padding: theme.spacing(1.5),
   fontWeight: "bold",
   fontSize: "1rem",
-  textTransform: "uppercase",
+  padding: theme.spacing(1.5),
+  width: "100%",
+  borderRadius: 30,
   "&:hover": {
     backgroundColor: theme.palette.primary.dark,
   },
 }));
 
-const SLIDER_MIN = 500;
-const SLIDER_MAX = 10000;
-const SLIDER_STEP = 50.5;
-const SLIDER_INITIAL = 3175.5;
+const VALUE_MIN = 400;
+const VALUE_MAX = 4000;
+
+const steps = ["Simule o valor", "Preencha seus dados"];
+
+const formatCurrency = (value: number): string => {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value);
+};
 
 export default function SimulatorSection() {
-  const [step, setStep] = useState<number>(1); // Controla a etapa do formulário
-
+  const [activeStep, setActiveStep] = useState(0);
   const [productType, setProductType] = useState<ProductType>("imoveis");
-  const [tabValue, setTabValue] = useState<number>(0);
-  const [sliderValue, setSliderValue] = useState<number>(SLIDER_INITIAL);
+  const [simType] = useState<"parcela" | "credito">("parcela");
+  const [sliderValue, setSliderValue] = useState<number>(2200);
 
-  // Adiciona o estado para os dados do formulário
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-
-  const handleProductChange = (event: SelectChangeEvent<ProductType>): void => {
-    setProductType(event.target.value as ProductType);
+  const handleProductChange = (
+    _: React.MouseEvent<HTMLElement>,
+    newType: ProductType | null
+  ) => {
+    if (newType !== null) setProductType(newType);
   };
 
-  const handleTabChange = (_: SyntheticEvent, newValue: number): void => {
-    setTabValue(newValue);
+  const handleSliderChange = (_: Event, newValue: number | number[]) => {
+    setSliderValue(newValue as number);
   };
 
-  const handleSliderChange = (_: Event, newValue: number | number[]): void => {
-    setSliderValue(typeof newValue === "number" ? newValue : newValue[0]);
+  const handleNext = () => {
+    setActiveStep((prevStep) => prevStep + 1);
   };
 
-  const formatCurrency = (value: number): string =>
-    `R$ ${value.toLocaleString("pt-BR", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
-
-  const handleNextStep = (): void => {
-    setStep(2); // Avança para a segunda etapa
+  const handleBack = () => {
+    setActiveStep((prevStep) => prevStep - 1);
   };
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
+  const productTypeLabel =
+    PRODUCT_OPTIONS.find((option) => option.value === productType)?.label || "";
 
-  const handleFormSubmit = async (event: React.FormEvent): Promise<void> => {
-    event.preventDefault();
+  const handleFormSubmit = async (
+    data: Record<string, unknown>
+  ): Promise<void> => {
     try {
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleDateString("pt-BR", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      // product type
-      const productTypeLabel = PRODUCT_OPTIONS.find(
-        (option) => option.value === productType
-      )?.label;
-
-      const dataToSend = {
-        ...formData,
-        parcela: sliderValue,
-        dateTime: formattedDate,
-        tipo: productTypeLabel,
-      };
-
-      await sendFormToFirebase(dataToSend);
+      await sendFormToFirebase(data);
       alert("Formulário enviado com sucesso!");
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
@@ -167,137 +114,142 @@ export default function SimulatorSection() {
   return (
     <Box
       sx={{
+        width: "100%",
+        minHeight: "100vh",
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        backgroundColor: "#f5f5f5",
-        p: 2,
+        flexDirection: { xs: "column", md: "row" },
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <FormContainer>
-        {step === 1 && (
-          <>
-            <Typography
-              variant="h4"
-              component="h2"
-              fontWeight="bold"
-              color="text.primary"
-              textAlign="center"
-            >
-              Simule agora
-            </Typography>
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          background:
+            "radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 70%)",
+          animation: "move 10s infinite alternate",
+          zIndex: 0,
+          "@keyframes move": {
+            "0%": { transform: "translate(0, 0)" },
+            "100%": { transform: "translate(20px, 10px)" },
+          },
+        }}
+      />
 
-            <FormControl fullWidth>
-              <InputLabel id="product-type-label">Escolha o tipo</InputLabel>
-              <Select<ProductType>
-                labelId="product-type-label"
+      {/* Left - Text Section */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          p: { xs: 4, md: 8 },
+          zIndex: 1,
+        }}
+      >
+        <Typography variant="h3" fontWeight="bold" color="primary" gutterBottom>
+          Simule o futuro dos seus sonhos
+        </Typography>
+        <Typography variant="body1" sx={{ maxWidth: 400 }}>
+          Escolha o valor ideal, preencha seus dados e receba a simulação do seu
+          consórcio com facilidade e segurança.
+        </Typography>
+      </Box>
+
+      {/* Right - Form Section */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          p: { xs: 2, md: 4 },
+          zIndex: 1,
+        }}
+      >
+        <FormContainer>
+          <Stepper activeStep={activeStep} alternativeLabel>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+
+          {activeStep === 0 && (
+            <Box
+              component="div"
+              p={{ xs: 2, sm: 4 }}
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ width: "100%", height: "100%" }}
+            >
+              <Typography
+                variant="h6"
+                textAlign="center"
+                fontWeight="bold"
+                color="primary"
+              >
+                A hora de realizar é agora.
+              </Typography>
+
+              <Typography variant="body1" textAlign="center">
+                Selecione sua próxima conquista:
+              </Typography>
+
+              <ToggleButtonGroup
                 value={productType}
-                label="Escolha o tipo"
+                exclusive
                 onChange={handleProductChange}
+                aria-label="Tipo de produto"
+                sx={{ flexWrap: "wrap", gap: 1 }}
               >
                 {PRODUCT_OPTIONS.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
+                  <ToggleButton key={option.value} value={option.value}>
                     {option.label}
-                  </MenuItem>
+                  </ToggleButton>
                 ))}
-              </Select>
-            </FormControl>
+              </ToggleButtonGroup>
 
-            <StyledTabs
-              value={tabValue}
-              onChange={handleTabChange}
-              variant="fullWidth"
-            >
-              {TAB_LABELS.map((label) => (
-                <StyledTab key={label} label={label} />
-              ))}
-            </StyledTabs>
-
-            <Box>
-              <Typography variant="body1" gutterBottom>
-                {tabValue === 0
-                  ? "Escolha o valor da parcela:"
-                  : "Escolha o valor do crédito:"}
+              <Typography variant="body1" textAlign="center">
+                Escolha o valor da{" "}
+                {simType === "parcela" ? "parcela" : "carta de crédito"}:
               </Typography>
-              <Typography
-                variant="h4"
-                component="p"
-                fontWeight="bold"
-                sx={{ color: theme.palette.primary.main, mb: 2 }}
-              >
+
+              <Typography variant="h4" fontWeight="bold">
                 {formatCurrency(sliderValue)}
               </Typography>
-              <StyledSlider
+
+              <Slider
                 value={sliderValue}
-                min={SLIDER_MIN}
-                max={SLIDER_MAX}
-                step={SLIDER_STEP}
                 onChange={handleSliderChange}
-                aria-labelledby="value-slider"
+                min={VALUE_MIN}
+                max={VALUE_MAX}
+                step={100}
+                sx={{ width: "100%", color: theme.palette.primary.main }}
               />
+
+              <StyledButton onClick={handleNext}>Avançar</StyledButton>
             </Box>
+          )}
 
-            <SimulateButton fullWidth onClick={handleNextStep}>
-              Simular Consórcio
-            </SimulateButton>
-          </>
-        )}
-        {step === 2 && (
-          <form onSubmit={handleFormSubmit}>
-            <Typography
-              variant="h4"
-              component="h2"
-              fontWeight="bold"
-              color="text.primary"
-              textAlign="center"
-            >
-              Preencha seus dados
-            </Typography>
-
-            <TextField
-              label="Nome"
-              name="name"
-              type="text"
-              required
-              fullWidth
-              variant="outlined"
-              value={formData.name}
-              onChange={handleInputChange}
+          {activeStep === 1 && (
+            <FormSection
+              onSubmit={handleFormSubmit}
+              onBack={handleBack}
+              sliderValue={sliderValue}
+              productTypeLabel={productTypeLabel}
             />
-            <TextField
-              label="Email"
-              name="email"
-              type="email"
-              required
-              fullWidth
-              variant="outlined"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-            <TextField
-              label="Celular"
-              name="phone"
-              type="tel"
-              required
-              fullWidth
-              variant="outlined"
-              value={formData.phone}
-              onChange={handleInputChange}
-            />
-
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
-            >
-              Enviar
-            </Button>
-          </form>
-        )}
-      </FormContainer>
+          )}
+        </FormContainer>
+      </Box>
     </Box>
   );
 }
