@@ -55,7 +55,7 @@ const MinaNax = (
             width={1299}
             height={1994}
             transform="translate(550.97 24.52) scale(.45)"
-            href="src/assets/download.png"
+            href="../download.png"
           />
         </g>
       </g>

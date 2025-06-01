@@ -10,7 +10,7 @@ import { SellerInfoTexts } from "../../utils";
 import { LogoCanopus, LogoNax } from "../../assets/svg";
 import { FloatingAvatar, InfoItem, LogoButton } from ".";
 
-const sellerPhoto = "src/assets/nagua.png";
+const sellerPhoto = "../../assets/nagua.png";
 
 export default function SellerInfoSection() {
   const theme = useTheme();
