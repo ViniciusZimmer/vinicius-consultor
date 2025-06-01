@@ -116,20 +116,6 @@ export default function Header() {
                               color: theme.palette.primary.main,
                               px: 2,
                               py: 1,
-                              // borderRadius: 2,
-                              // transition: "background 0.2s",
-                              // boxShadow: "none", // Remove qualquer sombra
-                              // "&:hover": {
-                              //   background: theme.palette.action.hover,
-                              //   boxShadow: "none", // Remove sombra no hover
-                              // },
-                              // "&:active": {
-                              //   background: "transparent", // Remove o fundo no clique
-                              //   boxShadow: "none", // Remove sombra no clique
-                              // },
-                              // "&:focus": {
-                              //   outline: "none", // Remove o contorno de foco
-                              // },
                             }}
                           >
                             {item.label}

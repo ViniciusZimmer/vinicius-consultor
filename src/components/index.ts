@@ -6,6 +6,7 @@ import { SellerInfoSection } from "./SellerInfo";
 import AnimatedFlowDivider from "./AnimatedFlowDivider";
 import ConsortiumProcessSection from "./ConsortiumProcessSection";
 import Footer from "./Footer/Footer";
+import SimulatorSection from "./SimulatorSection/SimulatorSection";
 
 export {
   ConsorcioSection,
@@ -15,4 +16,5 @@ export {
   AnimatedFlowDivider,
   ConsortiumProcessSection,
   Footer,
+  SimulatorSection,
 };
