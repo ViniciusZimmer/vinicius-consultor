@@ -1,6 +1,8 @@
 import * as React from "react";
 import type { JSX } from "react/jsx-runtime";
 
+import minaNaxPng from "@/assets/download.png"; // Adjust the path as necessary
+
 const MinaNax = (
   props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
 ) => (
@@ -55,7 +57,7 @@ const MinaNax = (
             width={1299}
             height={1994}
             transform="translate(550.97 24.52) scale(.45)"
-            href="../download.png"
+            href={minaNaxPng}
           />
         </g>
       </g>

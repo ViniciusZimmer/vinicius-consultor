@@ -6,11 +6,11 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 
-import { SellerInfoTexts } from "../../utils";
-import { LogoCanopus, LogoNax } from "../../assets/svg";
+import { SellerInfoTexts } from "@/utils";
+import { LogoCanopus, LogoNax } from "@/assets/svg";
 import { FloatingAvatar, InfoItem, LogoButton } from ".";
 
-const sellerPhoto = "../../assets/nagua.png";
+import sellerPhoto from "@/assets/nagua.png";
 
 export default function SellerInfoSection() {
   const theme = useTheme();

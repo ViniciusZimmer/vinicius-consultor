@@ -5,10 +5,10 @@ import theme from "./theme";
 import {
   ConsorcioSection,
   ConsortiumProcessSection,
+  Footer,
   Header,
   SellerInfoSection,
-} from "./components";
-import Footer from "./components/Footer/Footer";
+} from "@/components";
 
 export default function App() {
   return (
