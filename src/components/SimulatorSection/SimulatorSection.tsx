@@ -144,11 +144,16 @@ export default function SimulatorSection() {
         hour: "2-digit",
         minute: "2-digit",
       });
+      // product type
+      const productTypeLabel = PRODUCT_OPTIONS.find(
+        (option) => option.value === productType
+      )?.label;
 
       const dataToSend = {
         ...formData,
         parcela: sliderValue,
         dateTime: formattedDate,
+        tipo: productTypeLabel,
       };
 
       await sendFormToFirebase(dataToSend);
