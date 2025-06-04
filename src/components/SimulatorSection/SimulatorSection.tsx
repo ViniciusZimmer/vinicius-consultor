@@ -4,16 +4,20 @@ import {
   Typography,
   Paper,
   Button,
-  Slider,
   ToggleButton,
-  ToggleButtonGroup,
   styled,
   Stepper,
   Step,
   StepLabel,
+  ToggleButtonGroup,
+  Slider,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  Stack,
+  useTheme,
 } from "@mui/material";
-import { sendFormToFirebase } from "@/hooks/sendForms";
-import FormSection from "./FormSection";
+import { Controller, useForm } from "react-hook-form";
 import theme from "@/theme";
 
 // Types
@@ -25,37 +29,129 @@ const PRODUCT_OPTIONS: { value: ProductType; label: string }[] = [
   { value: "motos", label: "Motos" },
 ];
 
-// Styled components
-const FormContainer = styled(Paper)(({ theme }) => ({
-  maxWidth: 600, // Largura fixa
+const MainContainer = styled(Box)(({ theme }) => ({
   width: "100%",
-  height: 600, // Altura fixa
-  minHeight: 600, // Garantir altura mínima
-  padding: theme.spacing(4),
-  borderRadius: theme.shape.borderRadius * 2,
-  boxShadow: theme.shadows[6],
+  minHeight: "100vh",
+  position: "relative",
+  overflow: "hidden",
   display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(4),
-  backgroundColor: theme.palette.background.paper,
-  [theme.breakpoints.down("sm")]: {
-    maxWidth: "90%",
-    padding: theme.spacing(3),
-    gap: theme.spacing(3),
+  flexDirection: "row",
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+  },
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: "-100px",
+    right: "-100px",
+    width: "300px",
+    height: "300px",
+    borderRadius: "50%",
+    zIndex: 0,
+  },
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    bottom: "-50px",
+    left: "-50px",
+    width: "200px",
+    height: "200px",
+    borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+    animation: "float 6s ease-in-out infinite",
+    zIndex: 0,
+  },
+  "@keyframes float": {
+    "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+    "50%": { transform: "translateY(-20px) rotate(5deg)" },
   },
 }));
 
+const HeroSection = styled(Box)(({ theme }) => ({
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "flex-start",
+  padding: theme.spacing(8),
+  zIndex: 1,
+  position: "relative",
+  [theme.breakpoints.down("md")]: {
+    padding: theme.spacing(4),
+    textAlign: "center",
+    alignItems: "center",
+  },
+}));
+
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+  display: "flex",
+  gap: theme.spacing(1),
+  flexWrap: "wrap",
+  justifyContent: "center",
+  "& .MuiToggleButton-root": {
+    border: "2px solid #e5e7eb",
+    borderRadius: 25,
+    padding: "8px 20px",
+    fontSize: "0.9rem",
+    fontWeight: 500,
+    color: "#6b7280",
+    backgroundColor: "#f9fafb",
+    transition: "all 0.2s ease",
+    "&:hover": {
+      backgroundColor: "#f3f4f6",
+      borderColor: theme.palette.primary.main,
+    },
+    "&.Mui-selected": {
+      backgroundColor: theme.palette.primary.main,
+      color: "white",
+      borderColor: theme.palette.primary.main,
+      "&:hover": {
+        backgroundColor: theme.palette.primary.dark,
+      },
+    },
+  },
+}));
+
+// Container do formulário com altura fixa
+const FormContainer = styled(Paper)(({ theme }) => ({
+  maxWidth: 450,
+  width: "100%",
+  height: 700, // Altura fixa para manter consistência
+  padding: theme.spacing(4),
+  borderRadius: 24,
+  boxShadow: "0 20px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.1)",
+  display: "flex",
+  flexDirection: "column",
+  backgroundColor: "rgba(255, 255, 255, 0.98)",
+  backdropFilter: "blur(10px)",
+  border: "1px solid rgba(255, 255, 255, 0.2)",
+  [theme.breakpoints.down("sm")]: {
+    maxWidth: "90%",
+    padding: theme.spacing(3),
+    height: 650, // Altura menor para mobile
+  },
+}));
+
+// Container para o conteúdo do step com altura fixa
+const StepContent = styled(Box)({
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  overflow: "auto", // Permite scroll se necessário
+});
+
 const StyledButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
-  color: theme.palette.common.white,
+  color: "white",
   fontWeight: "bold",
-  fontSize: "1rem",
-  padding: theme.spacing(1.5),
+  fontSize: "1.1rem",
+  padding: theme.spacing(1.8, 4),
   width: "100%",
   borderRadius: 30,
+  textTransform: "none",
+  transition: "all 0.3s ease",
   "&:hover": {
     backgroundColor: theme.palette.primary.dark,
+    transform: "translateY(-2px)",
   },
 }));
 
@@ -71,17 +167,186 @@ const formatCurrency = (value: number): string => {
   }).format(value);
 };
 
+// Componente FormSection integrado
+interface FormSectionProps {
+  onSubmit: (data: Record<string, unknown>) => Promise<void>;
+  onBack: () => void;
+  sliderValue: number;
+  productTypeLabel: string;
+}
+
+function FormSection({
+  onSubmit,
+  onBack,
+  sliderValue,
+  productTypeLabel,
+}: FormSectionProps) {
+  const theme = useTheme();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+    },
+  });
+
+  const handleFormSubmit = async (
+    data: Record<string, unknown>
+  ): Promise<void> => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString("pt-BR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const dataToSend = {
+      ...data,
+      parcela: sliderValue,
+      dateTime: formattedDate,
+      tipo: productTypeLabel,
+    };
+
+    await onSubmit(dataToSend);
+  };
+
+  return (
+    <Box
+      component="form"
+      onSubmit={handleSubmit(handleFormSubmit)}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        justifyContent: "space-between",
+      }}
+    >
+      <Box>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          color={theme.palette.primary.main}
+          textAlign="center"
+          sx={{ mb: 2 }}
+        >
+          Realize seus planos com a Simuladora de Parcelas
+        </Typography>
+
+        <Typography
+          variant="body2"
+          textAlign="center"
+          color="text.secondary"
+          sx={{ mb: 3 }}
+        >
+          Preencha os campos abaixo para ver os resultados:
+        </Typography>
+
+        <Stack spacing={2}>
+          <Controller
+            name="name"
+            control={control}
+            rules={{
+              required: "Nome é obrigatório",
+              pattern: {
+                value: /^[a-zA-ZÀ-ÿ\s]+$/,
+                message: "O nome deve conter apenas letras",
+              },
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Nome"
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                required
+                fullWidth
+              />
+            )}
+          />
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="E-mail"
+                type="email"
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                required
+                fullWidth
+              />
+            )}
+          />
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Telefone"
+                error={!!errors.phone}
+                helperText={errors.phone?.message}
+                required
+                fullWidth
+              />
+            )}
+          />
+        </Stack>
+
+        <Box sx={{ mt: 3 }}>
+          <FormControlLabel
+            control={<Checkbox required />}
+            label={
+              <Typography variant="body2">
+                Aceito os <strong>Termos de Privacidade</strong>.
+              </Typography>
+            }
+          />
+        </Box>
+      </Box>
+
+      <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+        <StyledButton variant="outlined" fullWidth onClick={onBack}>
+          Voltar
+        </StyledButton>
+        <StyledButton
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+        >
+          Resultado
+        </StyledButton>
+      </Stack>
+    </Box>
+  );
+}
+
 export default function SimulatorSection() {
   const [activeStep, setActiveStep] = useState(0);
   const [productType, setProductType] = useState<ProductType>("imoveis");
-  const [simType] = useState<"parcela" | "credito">("parcela");
-  const [sliderValue, setSliderValue] = useState<number>(2200);
+  const [simType, setSimType] = useState<"parcela" | "credito">("credito");
+  const [sliderValue, setSliderValue] = useState<number>(1000);
 
   const handleProductChange = (
     _: React.MouseEvent<HTMLElement>,
     newType: ProductType | null
   ) => {
     if (newType !== null) setProductType(newType);
+  };
+
+  const handleSimTypeChange = (
+    _: React.MouseEvent<HTMLElement>,
+    newType: "parcela" | "credito" | null
+  ) => {
+    if (newType !== null) setSimType(newType);
   };
 
   const handleSliderChange = (_: Event, newValue: number | number[]) => {
@@ -99,11 +364,9 @@ export default function SimulatorSection() {
   const productTypeLabel =
     PRODUCT_OPTIONS.find((option) => option.value === productType)?.label || "";
 
-  const handleFormSubmit = async (
-    data: Record<string, unknown>
-  ): Promise<void> => {
+  const handleFormSubmit = async (): Promise<void> => {
     try {
-      await sendFormToFirebase(data);
+      // await sendFormToFirebase(data);
       alert("Formulário enviado com sucesso!");
     } catch (error) {
       console.error("Erro ao enviar o formulário:", error);
@@ -112,54 +375,49 @@ export default function SimulatorSection() {
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: { xs: "column", md: "row" },
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          background:
-            "radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 70%)",
-          animation: "move 10s infinite alternate",
-          zIndex: 0,
-          "@keyframes move": {
-            "0%": { transform: "translate(0, 0)" },
-            "100%": { transform: "translate(20px, 10px)" },
-          },
-        }}
-      />
-
-      {/* Left - Text Section */}
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          p: { xs: 4, md: 8 },
-          zIndex: 1,
-        }}
-      >
-        <Typography variant="h3" fontWeight="bold" color="primary" gutterBottom>
-          Simule o futuro dos seus sonhos
+    <MainContainer>
+      {/* Left - Hero Section */}
+      <HeroSection>
+        <Typography
+          variant="h2"
+          fontWeight="bold"
+          color="white"
+          gutterBottom
+          sx={{
+            fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
+            lineHeight: 1.1,
+            textShadow: "2px 4px 8px rgba(0,0,0,0.3)",
+          }}
+        >
+          É crédito.
         </Typography>
-        <Typography variant="body1" sx={{ maxWidth: 400 }}>
-          Escolha o valor ideal, preencha seus dados e receba a simulação do seu
-          consórcio com facilidade e segurança.
+        <Typography
+          variant="h2"
+          fontWeight="bold"
+          color="white"
+          gutterBottom
+          sx={{
+            fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
+            lineHeight: 1.1,
+            textShadow: "2px 4px 8px rgba(0,0,0,0.3)",
+          }}
+        >
+          É investimento.
         </Typography>
-      </Box>
+        <Typography
+          variant="h2"
+          fontWeight="bold"
+          color={theme.palette.primary.main}
+          sx={{
+            fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
+            lineHeight: 1.1,
+            textShadow: "2px 4px 8px rgba(0,0,0,0.3)",
+            maxWidth: { xs: "100%", md: "600px" },
+          }}
+        >
+          Porque é especialista em consórcio.
+        </Typography>
+      </HeroSection>
 
       {/* Right - Form Section */}
       <Box
@@ -173,83 +431,150 @@ export default function SimulatorSection() {
         }}
       >
         <FormContainer>
-          <Stepper activeStep={activeStep} alternativeLabel>
+          <Stepper
+            activeStep={activeStep}
+            alternativeLabel
+            sx={{ width: "100%", mb: 3 }}
+          >
             {steps.map((label) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel
+                  sx={{ "& .MuiStepLabel-label": { fontSize: "0.9rem" } }}
+                >
+                  {label}
+                </StepLabel>
               </Step>
             ))}
           </Stepper>
 
-          {activeStep === 0 && (
-            <Box
-              component="div"
-              p={{ xs: 2, sm: 4 }}
-              display="flex"
-              flexDirection="column"
-              justifyContent="space-between"
-              alignItems="center"
-              sx={{ width: "100%", height: "100%" }}
-            >
-              <Typography
-                variant="h6"
-                textAlign="center"
-                fontWeight="bold"
-                color="primary"
+          <StepContent>
+            {activeStep === 0 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 3,
+                  height: "100%",
+                  justifyContent: "space-between",
+                }}
               >
-                A hora de realizar é agora.
-              </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 3,
+                    width: "100%",
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    textAlign="center"
+                    fontWeight="bold"
+                    color="primary"
+                  >
+                    A hora de realizar é agora.
+                  </Typography>
 
-              <Typography variant="body1" textAlign="center">
-                Selecione sua próxima conquista:
-              </Typography>
+                  <Typography
+                    variant="body1"
+                    textAlign="center"
+                    color="text.secondary"
+                  >
+                    Selecione sua próxima conquista:
+                  </Typography>
 
-              <ToggleButtonGroup
-                value={productType}
-                exclusive
-                onChange={handleProductChange}
-                aria-label="Tipo de produto"
-                sx={{ flexWrap: "wrap", gap: 1 }}
-              >
-                {PRODUCT_OPTIONS.map((option) => (
-                  <ToggleButton key={option.value} value={option.value}>
-                    {option.label}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
+                  <StyledToggleButtonGroup
+                    value={productType}
+                    exclusive
+                    onChange={handleProductChange}
+                    aria-label="Tipo de produto"
+                  >
+                    {PRODUCT_OPTIONS.map((option) => (
+                      <ToggleButton key={option.value} value={option.value}>
+                        {option.label}
+                      </ToggleButton>
+                    ))}
+                  </StyledToggleButtonGroup>
 
-              <Typography variant="body1" textAlign="center">
-                Escolha o valor da{" "}
-                {simType === "parcela" ? "parcela" : "carta de crédito"}:
-              </Typography>
+                  <Typography
+                    variant="body1"
+                    textAlign="center"
+                    color="text.secondary"
+                  >
+                    Simule o plano por:
+                  </Typography>
 
-              <Typography variant="h4" fontWeight="bold">
-                {formatCurrency(sliderValue)}
-              </Typography>
+                  <StyledToggleButtonGroup
+                    value={simType}
+                    exclusive
+                    onChange={handleSimTypeChange}
+                    aria-label="Tipo de simulação"
+                  >
+                    <ToggleButton value="parcela">Parcela</ToggleButton>
+                    <ToggleButton value="credito">Crédito</ToggleButton>
+                  </StyledToggleButtonGroup>
 
-              <Slider
-                value={sliderValue}
-                onChange={handleSliderChange}
-                min={VALUE_MIN}
-                max={VALUE_MAX}
-                step={100}
-                sx={{ width: "100%", color: theme.palette.primary.main }}
+                  <Typography
+                    variant="body1"
+                    textAlign="center"
+                    color="text.secondary"
+                  >
+                    Escolha o valor do{" "}
+                    {simType === "parcela" ? "parcela" : "crédito"}:
+                  </Typography>
+
+                  <Typography
+                    variant="h3"
+                    fontWeight="bold"
+                    color="text.primary"
+                  >
+                    {formatCurrency(sliderValue)}
+                  </Typography>
+
+                  <Slider
+                    value={sliderValue}
+                    onChange={handleSliderChange}
+                    min={VALUE_MIN}
+                    max={VALUE_MAX}
+                    step={100}
+                    sx={{
+                      width: "100%",
+                      color: theme.palette.primary.main,
+                      height: 8,
+                      "& .MuiSlider-track": {
+                        border: "none",
+                        backgroundColor: theme.palette.primary.main,
+                      },
+                      "& .MuiSlider-rail": {
+                        backgroundColor: "#e5e7eb",
+                      },
+                      "& .MuiSlider-thumb": {
+                        height: 24,
+                        width: 24,
+                        backgroundColor: theme.palette.primary.main,
+                        border: "3px solid white",
+                      },
+                    }}
+                  />
+                </Box>
+
+                <StyledButton onClick={handleNext}>Simular agora</StyledButton>
+              </Box>
+            )}
+
+            {activeStep === 1 && (
+              <FormSection
+                onSubmit={handleFormSubmit}
+                onBack={handleBack}
+                sliderValue={sliderValue}
+                productTypeLabel={productTypeLabel}
               />
-
-              <StyledButton onClick={handleNext}>Avançar</StyledButton>
-            </Box>
-          )}
-
-          {activeStep === 1 && (
-            <FormSection
-              onSubmit={handleFormSubmit}
-              onBack={handleBack}
-              sliderValue={sliderValue}
-              productTypeLabel={productTypeLabel}
-            />
-          )}
+            )}
+          </StepContent>
         </FormContainer>
       </Box>
-    </Box>
+    </MainContainer>
   );
 }

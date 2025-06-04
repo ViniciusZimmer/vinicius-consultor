@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const useForm = () => {
+export const useFormHandler = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
