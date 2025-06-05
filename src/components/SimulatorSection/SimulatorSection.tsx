@@ -33,11 +33,12 @@ const MainContainer = styled(Box)(({ theme }) => ({
   width: "100%",
   minHeight: "100vh",
   position: "relative",
-  overflow: "hidden",
+  overflow: "hidden", // Mantém o overflow escondido por padrão
   display: "flex",
   flexDirection: "row",
   [theme.breakpoints.down("md")]: {
     flexDirection: "column",
+    overflow: "hidden", // Remove o scroll em telas menores
   },
   "&::before": {
     content: '""',
@@ -115,28 +116,27 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 const FormContainer = styled(Paper)(({ theme }) => ({
   maxWidth: 450,
   width: "100%",
-  height: 700, // Altura fixa para manter consistência
+  height: 600, // Altura fixa para manter consistência
   padding: theme.spacing(4),
   borderRadius: 24,
-  boxShadow: "0 20px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.1)",
+
   display: "flex",
   flexDirection: "column",
   backgroundColor: "rgba(255, 255, 255, 0.98)",
   backdropFilter: "blur(10px)",
-  border: "1px solid rgba(255, 255, 255, 0.2)",
+  // border: "1px solid rgba(255, 255, 255, 0.2)",
   [theme.breakpoints.down("sm")]: {
-    maxWidth: "90%",
+    maxWidth: "100%",
     padding: theme.spacing(3),
-    height: 650, // Altura menor para mobile
+    height: 700, // Altura menor para mobile
   },
 }));
 
-// Container para o conteúdo do step com altura fixa
 const StepContent = styled(Box)({
   flex: 1,
   display: "flex",
   flexDirection: "column",
-  overflow: "auto", // Permite scroll se necessário
+  overflow: "auto",
 });
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -223,7 +223,6 @@ function FormSection({
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
         justifyContent: "space-between",
       }}
     >
@@ -304,15 +303,15 @@ function FormSection({
           <FormControlLabel
             control={<Checkbox required />}
             label={
-              <Typography variant="body2">
-                Aceito os <strong>Termos de Privacidade</strong>.
+              <Typography component="span" variant="body2">
+                Aceito os <strong>Termos de Privacidade</strong>
               </Typography>
             }
           />
         </Box>
       </Box>
 
-      <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+      <Stack paddingTop={4} gap={2} direction="row" spacing={2} sx={{ mt: 2 }}>
         <StyledButton variant="outlined" fullWidth onClick={onBack}>
           Voltar
         </StyledButton>
@@ -455,7 +454,6 @@ export default function SimulatorSection() {
                   flexDirection: "column",
                   alignItems: "center",
                   gap: 3,
-                  height: "100%",
                   justifyContent: "space-between",
                 }}
               >
@@ -540,7 +538,13 @@ export default function SimulatorSection() {
                     max={VALUE_MAX}
                     step={100}
                     sx={{
-                      width: "100%",
+                      width: {
+                        xs: "80%",
+                        sm: "80%",
+                        md: "80%",
+                        lg: "90%",
+                        xl: "100%",
+                      },
                       color: theme.palette.primary.main,
                       height: 8,
                       "& .MuiSlider-track": {
