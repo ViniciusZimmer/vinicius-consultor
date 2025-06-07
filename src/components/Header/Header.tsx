@@ -6,7 +6,6 @@ import {
   IconButton,
   Drawer,
   ListItem,
-  ListItemText,
   ListItemButton,
   useTheme,
 } from "@mui/material";
@@ -63,42 +62,46 @@ export default function Header() {
           </IconButton>
           <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
             <Box
-              sx={{ width: 220, py: 2 }}
+              sx={{
+                width: 220,
+                py: 2,
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+              }}
               role="presentation"
               onClick={() => setOpen(false)}
             >
               {headerMenuItems.map((item) => (
                 <ListItem key={item.label} disablePadding>
-                  <ListItemButton>
-                    <ListItemText
-                      primary={
-                        <motion.span
-                          whileHover={{
-                            scale: 1.08,
-                            color: theme.palette.primary.dark,
-                          }}
-                          whileTap={{ scale: 0.96 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 18,
-                          }}
-                          style={{ fontWeight: 600 }}
-                        >
-                          <Button
-                            disableRipple
-                            sx={{
-                              fontWeight: 600,
-                              color: theme.palette.primary.main,
-                              px: 2,
-                              py: 1,
-                            }}
-                          >
-                            {item.label}
-                          </Button>
-                        </motion.span>
-                      }
-                    />
+                  <ListItemButton
+                    sx={{
+                      justifyContent: "flex-start",
+                      px: 3,
+                      py: 1.5,
+                    }}
+                  >
+                    <motion.span
+                      whileHover={{
+                        scale: 1.08,
+                        color: theme.palette.primary.dark,
+                      }}
+                      whileTap={{ scale: 0.96 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 18,
+                      }}
+                      style={{
+                        fontWeight: 600,
+                        color: theme.palette.primary.main,
+                        width: "100%",
+                        textAlign: "left",
+                        fontSize: 16,
+                      }}
+                    >
+                      {item.label}
+                    </motion.span>
                   </ListItemButton>
                 </ListItem>
               ))}
@@ -124,6 +127,7 @@ export default function Header() {
                     background: theme.palette.action.hover,
                   },
                 }}
+                href="#simulador"
               >
                 {item.label}
               </Button>

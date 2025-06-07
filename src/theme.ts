@@ -73,6 +73,14 @@ let theme = createTheme({
     },
   },
   components: {
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          paddingLeft: 0,
+          paddingRight: 0,
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

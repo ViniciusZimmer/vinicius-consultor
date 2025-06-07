@@ -77,9 +77,8 @@ export const footerTexts = {
 };
 
 export const headerMenuItems = [
-  { label: "Área do Cliente" },
-  { label: "Formulário de Cadastro" },
-  { label: "Início" },
+  { label: "Início", href: "#home" },
+  { label: "Formulário de Cadastro", href: "#simulador" },
 ];
 
 export const simulatorSectionTexts = {
