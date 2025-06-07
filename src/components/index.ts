@@ -1,19 +1,14 @@
-import Header from "./Header/Header";
-
-import ConsorcioSection from "./ConsortiumSection";
+import { ConsortiumProcessSection } from "./ConsortiumProcess";
+import { Footer } from "./Footer";
+import { Header } from "./Header";
 import { SellerInfoSection } from "./SellerInfo";
-import AnimatedFlowDivider from "./ConsortiumProcess/components/AnimatedFlowDivider";
-
-import Footer from "./Footer/Footer";
-import SimulatorSection from "./SimulatorSection/SimulatorSection";
-import ConsortiumProcessSection from "./ConsortiumProcess/ConsortiumProcessSection";
-
+import { SimulatorSection } from "./SimulatorSection";
+import { ConsortiumSection } from "./ConsortiumSection";
 export {
-  ConsorcioSection,
+  ConsortiumSection,
   ConsortiumProcessSection,
   Header,
   SellerInfoSection,
-  AnimatedFlowDivider,
   Footer,
   SimulatorSection,
 };
