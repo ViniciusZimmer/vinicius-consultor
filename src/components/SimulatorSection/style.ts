@@ -140,8 +140,24 @@ const WhatsAppButton = styled(Fab)(() => ({
   color: "white",
   width: 56,
   height: 56,
+  zIndex: 9999,
+  animation: "pulse 1.5s infinite",
   "&:hover": {
     backgroundColor: "#128C7E",
+  },
+  "@keyframes pulse": {
+    "0%": {
+      boxShadow: "0 0 0 0 rgba(37, 211, 102, 0.7)",
+      transform: "scale(1)",
+    },
+    "70%": {
+      boxShadow: "0 0 0 16px rgba(37, 211, 102, 0)",
+      transform: "scale(1.08)",
+    },
+    "100%": {
+      boxShadow: "0 0 0 0 rgba(37, 211, 102, 0)",
+      transform: "scale(1)",
+    },
   },
 }));
 
