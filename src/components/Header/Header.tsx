@@ -13,36 +13,13 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { LogoCanopus, LogoNax } from "../assets/svg";
+import { LogoCanopus, LogoNax } from "../../assets/svg";
+import { buttonMotion, logoMotion } from "./animations";
+import { headerMenuItems } from "@/utils/constants";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
-
-  const menuItems = [
-    { label: "Área do Cliente" },
-    { label: "Formulário de Cadastro" },
-    { label: "Início" },
-  ];
-
-  // Animação leve para logos e botões
-  const logoMotion = {
-    whileHover: {
-      scale: 1.18,
-      rotate: -8,
-    },
-    whileTap: { scale: 0.92, rotate: 0 },
-    transition: { type: "spring", stiffness: 180, damping: 8 },
-  };
-
-  const buttonMotion = {
-    whileHover: {
-      scale: 1.16,
-      color: theme.palette.primary.dark,
-    },
-    whileTap: { scale: 0.92 },
-    transition: { type: "spring", stiffness: 180, damping: 8 },
-  };
 
   return (
     <AppBar
@@ -76,7 +53,6 @@ export default function Header() {
             />
           </Box>
         </Box>
-        {/* Menu mobile */}
         <Box sx={{ display: { xs: "flex", md: "none" } }}>
           <IconButton
             onClick={() => setOpen(true)}
@@ -91,7 +67,7 @@ export default function Header() {
               role="presentation"
               onClick={() => setOpen(false)}
             >
-              {menuItems.map((item) => (
+              {headerMenuItems.map((item) => (
                 <ListItem key={item.label} disablePadding>
                   <ListItemButton>
                     <ListItemText
@@ -110,7 +86,7 @@ export default function Header() {
                           style={{ fontWeight: 600 }}
                         >
                           <Button
-                            disableRipple // Remove o efeito de clique (ripple)
+                            disableRipple
                             sx={{
                               fontWeight: 600,
                               color: theme.palette.primary.main,
@@ -129,9 +105,8 @@ export default function Header() {
             </Box>
           </Drawer>
         </Box>
-        {/* Menu desktop */}
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
-          {menuItems.map((item) => (
+          {headerMenuItems.map((item) => (
             <motion.div
               key={item.label}
               {...buttonMotion}

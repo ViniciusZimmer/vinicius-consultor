@@ -1,41 +1,18 @@
 import {
-  Typography,
-  TextField,
-  Button,
+  Box,
   Checkbox,
   FormControlLabel,
-  Box,
   Stack,
+  TextField,
+  Typography,
   useTheme,
-  styled,
 } from "@mui/material";
+import type { FormSectionProps } from "./type";
+import { simulatorSectionTexts } from "@/utils/constants";
 import { Controller, useForm } from "react-hook-form";
-import { useMask } from "@react-input/mask";
+import { StyledButton } from "./style";
 
-interface FormSectionProps {
-  onSubmit: (data: Record<string, unknown>) => Promise<void>;
-  onBack: () => void;
-  sliderValue: number;
-  productTypeLabel: string;
-}
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
-  color: "white",
-  fontWeight: "bold",
-  fontSize: "1.1rem",
-  padding: theme.spacing(1.8, 4),
-  width: "100%",
-  borderRadius: 30,
-  textTransform: "none",
-  transition: "all 0.3s ease",
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-    transform: "translateY(-2px)",
-  },
-}));
-
-function FormSection({
+export function FormSection({
   onSubmit,
   onBack,
   sliderValue,
@@ -51,13 +28,6 @@ function FormSection({
       name: "",
       email: "",
       phone: "",
-    },
-  });
-
-  const phoneInputRef = useMask({
-    mask: "(00) 00000-0000",
-    replacement: {
-      0: /\d/,
     },
   });
 
@@ -87,96 +57,100 @@ function FormSection({
     <Box
       component="form"
       onSubmit={handleSubmit(handleFormSubmit)}
-      p={{ xs: 2, sm: 4 }}
-      display="flex"
-      flexDirection="column"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
     >
-      <Typography
-        variant="h6"
-        fontWeight="bold"
-        color={theme.palette.primary.main}
-        textAlign="center"
-      >
-        Realize seus planos com a Simuladora de Parcelas
-      </Typography>
+      <Box>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          color={theme.palette.primary.main}
+          textAlign="center"
+          sx={{ mb: 2 }}
+        >
+          {simulatorSectionTexts.formTitle}
+        </Typography>
 
-      <Typography
-        variant="body2"
-        textAlign="center"
-        color="text.secondary"
-        mb={3}
-      >
-        Preencha os campos abaixo para ver os resultados:
-      </Typography>
+        <Typography
+          variant="body2"
+          textAlign="center"
+          color="text.secondary"
+          sx={{ mb: 3 }}
+        >
+          {simulatorSectionTexts.formSubtitle}
+        </Typography>
 
-      <Stack spacing={2}>
-        <Controller
-          name="name"
-          control={control}
-          rules={{
-            required: "Nome é obrigatório",
-            pattern: {
-              value: /^[a-zA-ZÀ-ÿ\s]+$/,
-              message: "O nome deve conter apenas letras",
-            },
-          }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Nome"
-              error={!!errors.name}
-              helperText={errors.name?.message}
-              required
-              fullWidth
-            />
-          )}
-        />
-        <Controller
-          name="email"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="E-mail"
-              type="email"
-              error={!!errors.email}
-              helperText={errors.email?.message}
-              required
-              fullWidth
-            />
-          )}
-        />
-        <Controller
-          name="phone"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              inputRef={phoneInputRef}
-              label="Telefone"
-              error={!!errors.phone}
-              helperText={errors.phone?.message}
-              required
-              fullWidth
-            />
-          )}
-        />
-      </Stack>
+        <Stack spacing={2}>
+          <Controller
+            name="name"
+            control={control}
+            rules={{
+              required: "Nome é obrigatório",
+              pattern: {
+                value: /^[a-zA-ZÀ-ÿ\s]+$/,
+                message: "O nome deve conter apenas letras",
+              },
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label={simulatorSectionTexts.formName}
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                required
+                fullWidth
+              />
+            )}
+          />
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label={simulatorSectionTexts.formEmail}
+                type="email"
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                required
+                fullWidth
+              />
+            )}
+          />
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label={simulatorSectionTexts.formPhone}
+                error={!!errors.phone}
+                helperText={errors.phone?.message}
+                required
+                fullWidth
+              />
+            )}
+          />
+        </Stack>
 
-      <Box mt={3}>
-        <FormControlLabel
-          control={<Checkbox required />}
-          label={
-            <Typography variant="body2">
-              Aceito os <strong>Termos de Privacidade</strong>.
-            </Typography>
-          }
-        />
+        <Box sx={{ mt: 3 }}>
+          <FormControlLabel
+            control={<Checkbox required />}
+            label={
+              <Typography component="span" variant="body2">
+                {simulatorSectionTexts.formTerms}
+              </Typography>
+            }
+          />
+        </Box>
       </Box>
 
-      <Stack direction="row" spacing={2} mt={2}>
+      <Stack paddingTop={4} gap={2} direction="row" spacing={2} sx={{ mt: 2 }}>
         <StyledButton variant="outlined" fullWidth onClick={onBack}>
-          Voltar
+          {simulatorSectionTexts.backButton}
         </StyledButton>
         <StyledButton
           type="submit"
@@ -184,11 +158,9 @@ function FormSection({
           color="primary"
           fullWidth
         >
-          Resultado
+          {simulatorSectionTexts.resultButton}
         </StyledButton>
       </Stack>
     </Box>
   );
 }
-
-export default FormSection;

@@ -1,20 +1,19 @@
-import Header from "./Header";
+import Header from "./Header/Header";
 
-import ResponsiveBackground from "./ResponsiveBackground";
 import ConsorcioSection from "./ConsortiumSection";
 import { SellerInfoSection } from "./SellerInfo";
-import AnimatedFlowDivider from "./AnimatedFlowDivider";
-import ConsortiumProcessSection from "./ConsortiumProcessSection";
+import AnimatedFlowDivider from "./ConsortiumProcess/components/AnimatedFlowDivider";
+
 import Footer from "./Footer/Footer";
 import SimulatorSection from "./SimulatorSection/SimulatorSection";
+import ConsortiumProcessSection from "./ConsortiumProcess/ConsortiumProcessSection";
 
 export {
   ConsorcioSection,
+  ConsortiumProcessSection,
   Header,
-  ResponsiveBackground,
   SellerInfoSection,
   AnimatedFlowDivider,
-  ConsortiumProcessSection,
   Footer,
   SimulatorSection,
 };

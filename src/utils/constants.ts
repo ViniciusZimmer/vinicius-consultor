@@ -58,3 +58,49 @@ export const processSteps = [
     imageSrc: "/images/contemplation-time.jpg",
   },
 ];
+
+export const consortiumProcessSectionTexts = {
+  title: "Como funciona o consórcio?",
+  button: "Simular agora",
+};
+
+export const footerTexts = {
+  title: "Fale conosco",
+  links: [
+    { href: "#about", label: "Sobre nós" },
+    { href: "#services", label: "Serviços" },
+    { href: "#contact", label: "Contato" },
+  ],
+  button: "Entre em contato",
+  copyright: (year: number) =>
+    `© ${year} Vinicius Consultor. Todos os direitos reservados.`,
+};
+
+export const headerMenuItems = [
+  { label: "Área do Cliente" },
+  { label: "Formulário de Cadastro" },
+  { label: "Início" },
+];
+
+export const simulatorSectionTexts = {
+  hero1: "É crédito.",
+  hero2: "É investimento.",
+  hero3: "Porque é especialista em consórcio.",
+  step1Title: "A hora de realizar é agora.",
+  step1Subtitle: "Selecione sua próxima conquista:",
+  simTypeLabel: "Simule o plano por:",
+  simTypeParcela: "Parcela",
+  simTypeCredito: "Crédito",
+  valueLabel: (simType: string) =>
+    `Escolha o valor do ${simType === "parcela" ? "parcela" : "crédito"}:`,
+  simulateButton: "Simular agora",
+  formTitle: "Realize seus planos com a Simuladora de Parcelas",
+  formSubtitle: "Preencha os campos abaixo para ver os resultados:",
+  formName: "Nome",
+  formEmail: "E-mail",
+  formPhone: "Telefone",
+  formTerms: "Aceito os Termos de Privacidade",
+  backButton: "Voltar",
+  resultButton: "Resultado",
+  steps: ["Simule o valor", "Preencha seus dados"],
+};

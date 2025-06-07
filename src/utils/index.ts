@@ -1,1 +1,1 @@
-export { SellerInfoTexts, consortiumTexts, processSteps } from "./strings";
+export { SellerInfoTexts, consortiumTexts, processSteps } from "./constants";

@@ -1,56 +1,14 @@
 import { Box, useTheme } from "@mui/material";
-import { styled } from "@mui/material/styles";
+
 import { motion } from "framer-motion";
-
-const MotionBox = motion(Box);
-
-const AnimatedDividerContainer = styled(MotionBox)(({ theme }) => ({
-  width: "100%",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  marginTop: theme.spacing(6),
-  marginBottom: theme.spacing(6),
-  height: 180,
-  overflow: "hidden",
-  backgroundColor: theme.palette.background.default,
-}));
+import { AnimatedDividerContainer } from "../style";
+import { lineVariants, dotVariants } from "../animation";
 
 const AnimatedFlowIllustration = () => {
   const theme = useTheme();
   const mainColor = theme.palette.primary.main;
-  const accentColor = theme.palette.secondary.light || "#ADD8E6";
-  const thirdColor = theme.palette.info.light || "#ADD8E6";
-
-  const lineVariants = {
-    hidden: { pathLength: 0, opacity: 0 },
-    visible: (i: number) => ({
-      pathLength: 1,
-      opacity: 1,
-      transition: {
-        duration: 2.5,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatType: "loop" as const,
-        delay: i * 0.5,
-      },
-    }),
-  };
-
-  const dotVariants = {
-    hidden: { opacity: 0, scale: 0 },
-    visible: (i: number) => ({
-      opacity: [0, 1, 0],
-      scale: [0, 1, 0.5],
-      transition: {
-        duration: 3,
-        ease: "easeOut",
-        repeat: Infinity,
-        repeatType: "loop" as const,
-        delay: i * 0.8,
-      },
-    }),
-  };
+  const accentColor = theme.palette.secondary.light;
+  const thirdColor = theme.palette.info.light;
 
   return (
     <Box

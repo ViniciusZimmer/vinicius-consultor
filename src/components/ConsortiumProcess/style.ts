@@ -1,17 +1,27 @@
 import {
   Box,
-  Typography,
+  Button,
   Card,
   CardContent,
   CardMedia,
-  Button,
+  styled,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { motion } from "framer-motion";
-import { processSteps } from "../utils";
-import AnimatedFlowDivider from "./AnimatedFlowDivider";
 
-// --- Styled Components ---
+const MotionBox = motion(Box);
+
+const AnimatedDividerContainer = styled(MotionBox)(({ theme }) => ({
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: theme.spacing(6),
+  marginBottom: theme.spacing(6),
+  height: 180,
+  overflow: "hidden",
+  backgroundColor: theme.palette.background.default,
+}));
+
 const SectionContainer = styled(motion(Box))(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(10, 3),
@@ -94,75 +104,15 @@ const StyledButton = styled(motion(Button))(({ theme }) => ({
   },
 }));
 
-// --- Animation Variants ---
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.3,
-    },
-  },
+export {
+  AnimatedDividerContainer,
+  MotionBox,
+  SectionContainer,
+  StepsWrapper,
+  StepContainer,
+  StepNumber,
+  StepCard,
+  StyledCardMedia,
+  StyledCardContent,
+  StyledButton,
 };
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 60 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-};
-
-const buttonVariants = {
-  hover: { scale: 1.1 },
-  tap: { scale: 0.95 },
-};
-
-// --- Main Component ---
-function ConsortiumProcessSection() {
-  return (
-    <SectionContainer
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={containerVariants}
-    >
-      <AnimatedFlowDivider />
-      <Typography
-        paddingBottom={4}
-        color="primary"
-        variant="h4"
-        fontWeight={700}
-        gutterBottom
-      >
-        Como funciona o consórcio?
-      </Typography>
-
-      <StepsWrapper>
-        {processSteps.map((step) => (
-          <StepContainer key={step.number} variants={itemVariants}>
-            <StepNumber variants={itemVariants}>{step.number}</StepNumber>
-            <StepCard
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              variants={itemVariants}
-            >
-              <StyledCardMedia image={step.imageSrc} />
-              <StyledCardContent>
-                <Typography variant="h6" fontWeight={700} gutterBottom>
-                  {step.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {step.description}
-                </Typography>
-              </StyledCardContent>
-            </StepCard>
-          </StepContainer>
-        ))}
-      </StepsWrapper>
-
-      <StyledButton variants={buttonVariants} whileHover="hover" whileTap="tap">
-        Simular agora
-      </StyledButton>
-    </SectionContainer>
-  );
-}
-
-export default ConsortiumProcessSection;

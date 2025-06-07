@@ -1,4 +1,4 @@
-export const avatarMotion = {
+const avatarMotion = {
   initial: { y: 0, rotate: 0 },
   animate: { y: [0, -10, 0], rotate: [0, 3, -3, 0] },
   whileHover: {
@@ -15,8 +15,10 @@ export const avatarMotion = {
   whileTap: { scale: 0.95, rotate: 0 },
 };
 
-export const logoMotion = {
+const logoMotion = {
   whileHover: { scale: 1.18, rotate: -8 },
   whileTap: { scale: 0.92, rotate: 0 },
   transition: { type: "spring", stiffness: 180, damping: 8 },
 };
+
+export { avatarMotion, logoMotion };
