@@ -1,8 +1,15 @@
-import { Box, Button, Paper, styled, ToggleButtonGroup } from "@mui/material";
+import {
+  Box,
+  Button,
+  Fab,
+  Paper,
+  styled,
+  ToggleButtonGroup,
+} from "@mui/material";
 
 const MainContainer = styled(Box)(({ theme }) => ({
   width: "100%",
-  minHeight: "100vh",
+  minHeight: "90vh",
   position: "relative",
   overflow: "hidden",
   display: "flex",
@@ -39,14 +46,15 @@ const MainContainer = styled(Box)(({ theme }) => ({
 }));
 
 const HeroSection = styled(Box)(({ theme }) => ({
+  position: "relative",
+  zIndex: 2,
   flex: 1,
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "flex-start",
+  backgroundColor: "rgba(255, 255, 255, 0.9)",
   padding: theme.spacing(8),
-  zIndex: 1,
-  position: "relative",
   [theme.breakpoints.down("md")]: {
     padding: theme.spacing(4),
     textAlign: "center",
@@ -89,6 +97,7 @@ const FormContainer = styled(Paper)(({ theme }) => ({
   height: 600,
   padding: theme.spacing(4),
   borderRadius: 24,
+  zIndex: 2,
   display: "flex",
   flexDirection: "column",
   backgroundColor: "rgba(255, 255, 255, 0.98)",
@@ -123,6 +132,19 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+const WhatsAppButton = styled(Fab)(() => ({
+  position: "fixed",
+  bottom: 24,
+  right: 24,
+  backgroundColor: "#25D366",
+  color: "white",
+  width: 56,
+  height: 56,
+  "&:hover": {
+    backgroundColor: "#128C7E",
+  },
+}));
+
 export {
   MainContainer,
   HeroSection,
@@ -130,4 +152,5 @@ export {
   FormContainer,
   StepContent,
   StyledButton,
+  WhatsAppButton,
 };

@@ -103,4 +103,8 @@ export const simulatorSectionTexts = {
   backButton: "Voltar",
   resultButton: "Resultado",
   steps: ["Simule o valor", "Preencha seus dados"],
+  whatsAppButton: (text: string) =>
+    `https://wa.me/5541998564806?text=${encodeURIComponent(text)}`,
+  whatsAppMensage: (productType: string, sliderValue: string) =>
+    `Olá! Tenho interesse em um consórcio de ${productType} no valor de ${sliderValue}. Podem me ajudar?`,
 };
