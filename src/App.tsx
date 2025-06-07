@@ -3,8 +3,8 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import theme from "@/theme";
 import {
-  ConsorcioSection,
   ConsortiumProcessSection,
+  ConsortiumSection,
   Footer,
   Header,
   SellerInfoSection,
@@ -24,7 +24,7 @@ export default function App() {
         <Container sx={{ mt: 4, mb: 4, pt: 4 }}>
           <SimulatorSection />
           <SellerInfoSection />
-          <ConsorcioSection />
+          <ConsortiumSection />
           <ConsortiumProcessSection />
         </Container>
       </Box>
