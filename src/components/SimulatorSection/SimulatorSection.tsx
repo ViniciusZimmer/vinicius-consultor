@@ -119,7 +119,7 @@ export default function SimulatorSection() {
             <Typography
               variant="h2"
               fontWeight="bold"
-              color="white"
+              color={theme.palette.primary.main}
               gutterBottom
               sx={{
                 fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
@@ -128,19 +128,6 @@ export default function SimulatorSection() {
               }}
             >
               {simulatorSectionTexts.hero2}
-            </Typography>
-            <Typography
-              variant="h2"
-              fontWeight="bold"
-              color={theme.palette.primary.main}
-              sx={{
-                fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
-                lineHeight: 1.1,
-                textShadow: "2px 4px 8px rgba(0,0,0,0.3)",
-                maxWidth: { xs: "100%", md: "600px" },
-              }}
-            >
-              {simulatorSectionTexts.hero3}
             </Typography>
           </Box>
         </HeroSection>

@@ -32,22 +32,19 @@ export const processSteps = [
   {
     number: "01",
     title: "Escolha seu objetivo",
-    description:
-      "Veja qual opção e condições servem melhor a você.",
+    description: "Veja qual opção e condições servem melhor a você.",
     imageSrc: "/images/plan-selection.jpg",
   },
   {
     number: "02",
     title: "Contribua mensalmente",
-    description:
-      "Contribua em dia para estar apto a ser contemplado.",
+    description: "Contribua em dia para estar apto a ser contemplado.",
     imageSrc: "/images/monthly-contribution.jpg",
   },
   {
     number: "03",
     title: "Fique de olho nas assembleias",
-    description:
-      "Acompanhe os sorteios ao vivo no Youtube da canopus.",
+    description: "Acompanhe os sorteios ao vivo no Youtube da canopus.",
     imageSrc: "/images/assembly.jpg",
   },
   {
@@ -84,7 +81,6 @@ export const headerMenuItems = [
 export const simulatorSectionTexts = {
   hero1: "Pronto para realizar seus sonhos sem JUROS E IOF?.",
   hero2: "Simule agora mesmo, e surpreenda-se!.",
-  hero3: "A hora de realizar é agora.",
   step1Title: "A hora de realizar é agora.",
   step1Subtitle: "Selecione sua próxima conquista:",
   simTypeLabel: "Simule o plano por:",
