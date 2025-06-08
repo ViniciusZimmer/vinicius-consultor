@@ -8,7 +8,7 @@ export const SellerInfoTexts = {
   address: "Av. Manoel Ribas, 136 - Curitiba - PR",
   facebook: "Perfil Facebook",
   unitLabel: "Unidade:",
-  unitName: "SAO JOSE DOS PINHAIS – PR",
+  unitName: "Curitiba – PR",
   facebookLink: "https://www.facebook.com/affinitysegurosbrasilia",
   mapsLink: "https://g.co/kgs/QAkSJ9H",
   whatsappLink: "https://wa.me/5541998564806",
@@ -19,11 +19,11 @@ export const SellerInfoTexts = {
 };
 
 export const consortiumTexts = {
-  title: "Você sabe o que é consórcio?",
+  title: "Por que escolher consórcio?",
   description1:
-    "É uma modalidade de compra que facilita a realização de seus planos de vida, sem pagar juros. No consórcio, pessoas físicas e jurídicas se unem em grupos para aquisição de bens móveis, imóveis ou serviços.",
+    "O consórcio é a maneira mais inteligente e planejada de conquistar seus sonhos: seja um imóvel, carro, reforma ou mesmo para investir em seu negócio, TUDO ISSO SEM JUROS E IOF.",
   description2:
-    "Esses grupos são organizados por uma Administradora de Consórcios, autorizada e fiscalizada mensalmente pelo Banco Central do Brasil.",
+    "Funciona assim: Pessoas e empresas unem-se com o objetivo de adquirir um bem. Criando assim um fundo em comum, a administradora cuida e da garantia a esses grupos, e todos os meses diversas pessoas são contempladas. Todo o processo é fiscalizado pelo Banco do Brasil, sendo assim seguro, planejado e que cabe no seu bolso ",
   buttonText: "Simule agora",
   subtitle: "Sobre o segmento",
 };
@@ -31,30 +31,30 @@ export const consortiumTexts = {
 export const processSteps = [
   {
     number: "01",
-    title: "Escolha seu plano",
+    title: "Escolha seu objetivo",
     description:
-      "Diversas opções para você escolher aquela que melhor se adapta aos seus objetivos.",
+      "Veja qual opção e condições servem melhor a você.",
     imageSrc: "/images/plan-selection.jpg",
   },
   {
     number: "02",
     title: "Contribua mensalmente",
     description:
-      "Mantenha os pagamentos em dia para participar dos sorteios e assembleias.",
+      "Contribua em dia para estar apto a ser contemplado.",
     imageSrc: "/images/monthly-contribution.jpg",
   },
   {
     number: "03",
-    title: "Assembleia",
+    title: "Fique de olho nas assembleias",
     description:
-      "Acompanhe os sorteios mensalmente ou ofereça lances em diferentes modalidades.",
+      "Acompanhe os sorteios ao vivo no Youtube da canopus.",
     imageSrc: "/images/assembly.jpg",
   },
   {
     number: "04",
-    title: "Hora da contemplação",
+    title: "Momento da Contemplação",
     description:
-      "Ocorre por sorteio ou oferta de lances em diferentes modalidades.",
+      "Você pode contemplar por meio de sorteio ou utilizar a oferta de lances em diferentes modalidades.",
     imageSrc: "/images/contemplation-time.jpg",
   },
 ];
@@ -82,9 +82,9 @@ export const headerMenuItems = [
 ];
 
 export const simulatorSectionTexts = {
-  hero1: "É crédito.",
-  hero2: "É investimento.",
-  hero3: "Porque é especialista em consórcio.",
+  hero1: "Pronto para realizar seus sonhos sem JUROS E IOF?.",
+  hero2: "Simule agora mesmo, e surpreenda-se!.",
+  hero3: "A hora de realizar é agora.",
   step1Title: "A hora de realizar é agora.",
   step1Subtitle: "Selecione sua próxima conquista:",
   simTypeLabel: "Simule o plano por:",
