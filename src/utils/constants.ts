@@ -84,6 +84,7 @@ export const headerMenuItems = [
 export const simulatorSectionTexts = {
   hero1: "Pronto para realizar seus sonhos sem JUROS E IOF?.",
   hero2: "Simule agora mesmo, e surpreenda-se!.",
+  hero3: "A hora de realizar é agora.",
   step1Title: "A hora de realizar é agora.",
   step1Subtitle: "Selecione sua próxima conquista:",
   simTypeLabel: "Simule o plano por:",
